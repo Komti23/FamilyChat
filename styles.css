@@ -36,8 +36,14 @@ body {
 }
 
 .message {
-  animation: fadeInUp 0.3s ease;
+  opacity: 0;
+  transition: opacity 0.5s ease;
 }
+
+.message.fade-in {
+  opacity: 1;
+}
+
 
 #chat {
   display: none;

@@ -37,8 +37,6 @@ function wrapTextByCharacters(text, maxCharsPerLine = 30) {
   return result.trim();
 }
 
-
-
 function sendMessage() {
   const input = document.getElementById('messageInput');
   const text = input.value.trim();
@@ -60,7 +58,7 @@ function showMessage(msg, key) {
   const textSpan = document.createElement('span');
   textSpan.className = 'message-text';
 
-  // Эмодзи + перенос
+  // Парсим эмодзи и переносим строки
   const parsedText = wrapTextByCharacters(parseEmojis(msg.text), 30);
   textSpan.textContent = `${msg.role}: ${parsedText}`;
 
@@ -81,11 +79,12 @@ function showMessage(msg, key) {
 
   container.appendChild(div);
 
-  // ⬇ Автопрокрутка вниз
+  // Анимация появления (CSS-класс)
+  div.classList.add('fade-in');
+
+  // Автопрокрутка вниз
   container.scrollTop = container.scrollHeight;
 }
-
-
 
 function parseEmojis(text) {
   const emojisMap = {
@@ -108,23 +107,20 @@ function parseEmojis(text) {
     ':*': '😘',
     ':-*': '😘',
     '<3': '❤️'
-    // можно добавить свои смайлы сюда
   };
 
-  // Чтобы не путать частичные совпадения, заменим все ключи на эмодзи по очереди
   for (const [key, emoji] of Object.entries(emojisMap)) {
-    // Используем регулярное выражение, чтобы заменить все вхождения
     const regex = new RegExp(escapeRegExp(key), 'g');
     text = text.replace(regex, emoji);
   }
   return text;
 }
 
-// Помогает экранировать спецсимволы для RegExp
 function escapeRegExp(string) {
   return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
+// Предотвращаем отправку формы по Enter, чтобы избежать дублирования
 document.getElementById('messageInput').addEventListener('keydown', e => {
   if (e.key === 'Enter') {
     e.preventDefault();
@@ -132,16 +128,25 @@ document.getElementById('messageInput').addEventListener('keydown', e => {
   }
 });
 
-
-
 const messagesContainer = document.getElementById('messages');
+const shownMessages = new Set();
 
-db.ref('messages').on('child_added', snapshot => {
-  showMessage(snapshot.val(), snapshot.key);
+db.ref('messages').on('child_added', snap => {
+  const msg = snap.val();
+  const key = snap.key;
+
+  if (shownMessages.has(key)) return;
+  shownMessages.add(key);
+
+  showMessage(msg, key);
+
+  if (msg.role !== role && document.hidden && Notification.permission === 'granted') {
+    new Notification(`${msg.role}: ${msg.text}`);
+  }
 });
 
-db.ref('messages').on('child_removed', snapshot => {
-  const removedKey = snapshot.key;
+db.ref('messages').on('child_removed', snap => {
+  const removedKey = snap.key;
   const children = messagesContainer.children;
   for (let i = 0; i < children.length; i++) {
     const child = children[i];
@@ -151,9 +156,6 @@ db.ref('messages').on('child_removed', snapshot => {
     }
   }
 });
-
-const shownMessages = new Set();
-
 
 document.getElementById('clearBtn').onclick = () => {
   if (confirm("Вы действительно хотите очистить весь чат?")) {
@@ -165,25 +167,6 @@ document.getElementById('clearBtn').onclick = () => {
 // Запрашиваем разрешение на уведомления
 document.addEventListener('DOMContentLoaded', () => {
   if (Notification.permission === 'default') {
-    Notification.requestPermission().then(permission => {
-      console.log('Notification permission:', permission);
-    });
+    Notification.requestPermission();
   }
 });
-
-// Показываем уведомление при новом чужом сообщении
-db.ref('messages').on('child_added', snap => {
-  const msg = snap.val();
-  const key = snap.key;
-
-  if (shownMessages.has(key)) return; // Не показывать второй раз
-  shownMessages.add(key);
-
-  showMessage(msg, key);
-
-  if (msg.role !== role && document.hidden && Notification.permission === 'granted') {
-    new Notification(`${msg.role}: ${msg.text}`);
-  }
-});
-
-
