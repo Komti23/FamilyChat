@@ -78,10 +78,10 @@ body {
   padding: 10px;
   border-radius: 10px;
   max-width: 80%;
-  word-wrap: break-word;
-  overflow-wrap: break-word;  /* Добавить */
-  white-space: pre-wrap;       /* Добавить */
-  line-height: 1.4;            /* Для читаемости */
   font-size: 1rem;
+  line-height: 1.4;
+  word-break: break-word;       /* 💥 ВАЖНО: разбивает длинные слова */
+  white-space: pre-wrap;        /* сохраняет переносы и переносит длинные строки */
 }
+
 

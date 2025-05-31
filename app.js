@@ -29,6 +29,15 @@ function enterChat() {
   }
 }
 
+function wrapTextByCharacters(text, maxCharsPerLine = 30) {
+  let result = '';
+  for (let i = 0; i < text.length; i += maxCharsPerLine) {
+    result += text.slice(i, i + maxCharsPerLine) + '\n';
+  }
+  return result.trim();
+}
+
+
 function sendMessage() {
   const input = document.getElementById('messageInput');
   const text = input.value.trim();
@@ -49,7 +58,11 @@ function showMessage(msg, key) {
 
   const textSpan = document.createElement('span');
   textSpan.className = 'message-text';
-  textSpan.textContent = `${msg.role}: ${msg.text}`;
+
+  // Обработка текста: эмодзи + перенос по символам
+  const parsedText = wrapTextByCharacters(parseEmojis(msg.text), 30);
+  textSpan.textContent = `${msg.role}: ${parsedText}`;
+
   div.appendChild(textSpan);
 
   if (role === msg.role) {
@@ -68,6 +81,7 @@ function showMessage(msg, key) {
   container.appendChild(div);
   container.scrollTop = container.scrollHeight;
 }
+
 
 function parseEmojis(text) {
   const emojisMap = {
