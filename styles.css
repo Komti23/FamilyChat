@@ -1,0 +1,75 @@
+body {
+  font-family: sans-serif;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background: #f5f5f5;
+}
+#login {
+  margin: auto;
+  text-align: center;
+}
+#chat {
+  display: none;
+  flex-direction: column;
+  height: 100%;
+}
+#messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px;
+}
+.message {
+  margin: 5px 0;
+  padding: 10px;
+  border-radius: 10px;
+  max-width: 80%;
+  word-wrap: break-word;
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.Мама { background: #ffd1dc; align-self: flex-start; }
+.Папа { background: #cce5ff; align-self: flex-start; }
+.Сыночек { background: #d4edda; align-self: flex-start; }
+.Админ { background: #ffe680; align-self: flex-start; }
+.message-text {
+  flex-grow: 1;
+  padding-right: 10px;
+}
+.delete-btn {
+  background: #ff4d4d;
+  border: none;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  flex-shrink: 0;
+}
+#inputArea {
+  display: flex;
+  padding: 10px;
+  background: #ddd;
+}
+#inputArea input {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+}
+#inputArea button {
+  margin-left: 10px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  cursor: pointer;
+  background: #00f891;
+  border-radius: 5px;
+  border: none;
+}
+#clearBtn {
+  background: #007bff;
+}
