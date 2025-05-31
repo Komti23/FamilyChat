@@ -151,11 +151,30 @@ document.getElementById('clearBtn').onclick = () => {
   }
 };
 
+// Запрашиваем разрешение на уведомления
 document.addEventListener('DOMContentLoaded', () => {
   if (Notification.permission === 'default') {
     Notification.requestPermission().then(permission => {
-      console.log("Notification permission:", permission);
+      console.log('Notification permission:', permission);
     });
   }
 });
+
+// Показываем уведомление при новом чужом сообщении
+db.ref('messages').on('child_added', snap => {
+  const msg = snap.val();
+  const key = snap.key;
+
+  showMessage(msg, key);
+
+  // Уведомление, если сообщение не от тебя
+  if (msg.role !== role && document.hidden && Notification.permission === 'granted') {
+    try {
+      new Notification(`${msg.role}: ${msg.text}`);
+    } catch (err) {
+      console.error('Ошибка уведомления:', err);
+    }
+  }
+});
+
 
