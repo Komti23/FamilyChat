@@ -152,7 +152,10 @@ document.getElementById('clearBtn').onclick = () => {
 };
 
 document.addEventListener('DOMContentLoaded', () => {
-  if (Notification.permission !== 'granted' && Notification.permission !== 'denied') {
-    Notification.requestPermission();
+  if (Notification.permission === 'default') {
+    Notification.requestPermission().then(permission => {
+      console.log("Notification permission:", permission);
+    });
   }
 });
+
