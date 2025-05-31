@@ -69,6 +69,45 @@ function showMessage(msg, key) {
   container.scrollTop = container.scrollHeight;
 }
 
+function parseEmojis(text) {
+  const emojisMap = {
+    ':)': '😊',
+    ':-)': '😊',
+    ':(': '😞',
+    ':-(': '😞',
+    ':D': '😄',
+    ':-D': '😄',
+    ':P': '😛',
+    ':-P': '😛',
+    ';)': '😉',
+    ';-)': '😉',
+    ':o': '😮',
+    ':-o': '😮',
+    ':|': '😐',
+    ':-|': '😐',
+    ':/': '😕',
+    ':-/': '😕',
+    ':*': '😘',
+    ':-*': '😘',
+    '<3': '❤️'
+    // можно добавить свои смайлы сюда
+  };
+
+  // Чтобы не путать частичные совпадения, заменим все ключи на эмодзи по очереди
+  for (const [key, emoji] of Object.entries(emojisMap)) {
+    // Используем регулярное выражение, чтобы заменить все вхождения
+    const regex = new RegExp(escapeRegExp(key), 'g');
+    text = text.replace(regex, emoji);
+  }
+  return text;
+}
+
+// Помогает экранировать спецсимволы для RegExp
+function escapeRegExp(string) {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+
 const messagesContainer = document.getElementById('messages');
 
 db.ref('messages').on('child_added', snapshot => {
