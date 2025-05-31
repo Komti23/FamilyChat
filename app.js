@@ -38,6 +38,7 @@ function wrapTextByCharacters(text, maxCharsPerLine = 30) {
 }
 
 
+
 function sendMessage() {
   const input = document.getElementById('messageInput');
   const text = input.value.trim();
@@ -59,7 +60,7 @@ function showMessage(msg, key) {
   const textSpan = document.createElement('span');
   textSpan.className = 'message-text';
 
-  // Обработка текста: эмодзи + перенос по символам
+  // Эмодзи + перенос
   const parsedText = wrapTextByCharacters(parseEmojis(msg.text), 30);
   textSpan.textContent = `${msg.role}: ${parsedText}`;
 
@@ -79,8 +80,11 @@ function showMessage(msg, key) {
   }
 
   container.appendChild(div);
+
+  // ⬇ Автопрокрутка вниз
   container.scrollTop = container.scrollHeight;
 }
+
 
 
 function parseEmojis(text) {
