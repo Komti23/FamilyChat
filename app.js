@@ -144,6 +144,9 @@ db.ref('messages').on('child_removed', snapshot => {
   }
 });
 
+const shownMessages = new Set();
+
+
 document.getElementById('clearBtn').onclick = () => {
   if (confirm("Вы действительно хотите очистить весь чат?")) {
     db.ref('messages').remove()
@@ -165,15 +168,13 @@ db.ref('messages').on('child_added', snap => {
   const msg = snap.val();
   const key = snap.key;
 
+  if (shownMessages.has(key)) return; // Не показывать второй раз
+  shownMessages.add(key);
+
   showMessage(msg, key);
 
-  // Уведомление, если сообщение не от тебя
   if (msg.role !== role && document.hidden && Notification.permission === 'granted') {
-    try {
-      new Notification(`${msg.role}: ${msg.text}`);
-    } catch (err) {
-      console.error('Ошибка уведомления:', err);
-    }
+    new Notification(`${msg.role}: ${msg.text}`);
   }
 });
 
