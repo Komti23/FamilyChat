@@ -35,6 +35,19 @@ body {
   }
 }
 
+@media (min-width: 600px) {
+  .message-text {
+    max-width: 400px;
+  }
+}
+
+@media (max-width: 599px) {
+  .message-text {
+    max-width: 90vw; /* почти вся ширина экрана на мобилах */
+  }
+}
+
+
 .message {
   opacity: 0;
   transition: opacity 0.5s ease;
@@ -71,9 +84,13 @@ body {
 .Сыночек { background: #d4edda; align-self: flex-start; }
 .Админ { background: #ffe680; align-self: flex-start; }
 .message-text {
-  flex-grow: 1;
-  padding-right: 10px;
+  white-space: pre-wrap;  /* чтобы сохранялись пробелы и переносы строк */
+  word-wrap: break-word;  /* перенос слов, если они слишком длинные */
+  overflow-wrap: break-word;
+  max-width: 400px;       /* ограничение ширины на ПК — можно подкорректировать */
+  display: inline-block;  /* чтобы max-width применялся */
 }
+
 .delete-btn {
   background: #ff4d4d;
   border: none;
